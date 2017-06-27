@@ -1,3 +1,10 @@
+// yvAppKernel can generally be used as is - requirements are generally 
+// clear from the interface. 
+// One requirement that is not so obvious is the specification of jquery
+// through require.config(). 
+// This is required by questionhandler, and allows for specifying the file
+// locally as in the ionic use case. 
+
 define(["./clicker","./socketplay","./questionhandler"],
 function(clicker,socketPlayEngine,qnHandlerEngine){
 	return function(gameId,studentName,deviceUuid){
