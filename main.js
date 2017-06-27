@@ -86,7 +86,7 @@ function(clicker,socketPlayEngine,qnHandlerEngine){
 
 		this.connect=function(){
 			connectCalled=true;
-			qnHandlerObj=new qnHandlerEngine(optDiv,submitBtn,kernelParams,interactManager);
+			qnHandlerObj=new qnHandlerEngine(kernelParams,interactManager);
 			require.config({paths:{"socketio-server":kernelParams.socketScriptURL}});
 			socketPlayObj=new socketPlayEngine(kernelParams,interactManager);
 		}

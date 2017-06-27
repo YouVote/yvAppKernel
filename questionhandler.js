@@ -1,7 +1,9 @@
-define([],function(){
-	return function questionHandler(optDiv,submitBtn,kernelParams,interactManager){
+define(["jquery"],function(){
+	return function questionHandler(kernelParams,interactManager){
 		var question=this; var widObj;
 		var baseProdUrl=kernelParams.baseProdUrl;
+		optDiv=kernelParams.optDiv
+		submitBtn=kernelParams.submitBtn;
 		submitBtn.disabled=true;
 		this.initBaseProdUrl=function(tempBaseProdUrl){
 			// update baseProdUrl if something non-trivial is passed;
