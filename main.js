@@ -9,6 +9,7 @@ define(["./clicker","./socketplay","./questionhandler"],
 function(clicker,socketPlayEngine,qnHandlerEngine){
 	return function(gameId,studentName,deviceUuid){
 		var yvAppKernel=this;
+		var socketPlayObj, qnHandlerObj;
 		var connectCalled=false;
 		var kernelParams={
 			"socketScriptURL":"https://avalon-gabrielwu84.rhcloud.com/socket.io/socket.io",
@@ -16,6 +17,7 @@ function(clicker,socketPlayEngine,qnHandlerEngine){
 			"gameId": gameId,
 			"deviceUuid":deviceUuid,
 			"studentName":studentName,
+			"optFrame":document.createElement("iframe"),
 			"optDiv":document.createElement("div"),
 			"submitBtn":document.createElement("button"),
 			"baseProdUrl":"https://youvote.github.io/clicker-prod/",

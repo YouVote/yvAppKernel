@@ -2,9 +2,17 @@ define(["jquery"],function(){
 	return function questionHandler(kernelParams,interactManager){
 		var question=this; var widObj;
 		var baseProdUrl=kernelParams.baseProdUrl;
-		optDiv=kernelParams.optDiv
+		optFrame=kernelParams.optFrame;
+		optDiv=kernelParams.optDiv;
 		submitBtn=kernelParams.submitBtn;
 		submitBtn.disabled=true;
+
+		var optFrame=document.getElementById("optFrame")
+		var $head = $(optFrame).contents().find("head"); 
+		var url = "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css";
+		$head.append($("<link/>", { rel: "stylesheet", href: url, type: "text/css" } ));
+		optDiv = $(optFrame).contents().find("body");
+
 		this.initBaseProdUrl=function(tempBaseProdUrl){
 			// update baseProdUrl if something non-trivial is passed;
 			// else, revert to default found in kernelParams
