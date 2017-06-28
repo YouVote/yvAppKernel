@@ -1,7 +1,7 @@
 define([],function(){
 	return function socketPlay(kernelParams,interactManager){
+		var socketPlayObj=this;
 		require(["socketio-server"],function(io){
-			var socketPlayObj=this;
 			try{
 				var socketCore=io.connect(kernelParams.socketServerURL);
 			} catch(err){
@@ -42,12 +42,13 @@ define([],function(){
 						break;
 				};
 			});
-			this.relay=function(msg){
+			socketPlayObj.relay=function(msg){
 				socketCore.emit('relay',msg);
 			}
 		},function(err){
 			interactManager.socketFailCallback(1,err)
 		})
+		return socketPlayObj;
 	}
 })
 
