@@ -35,8 +35,8 @@ define([],function(){
 					case 'execModule':
 						interactManager.execQn(packet.modName,packet.modParams,packet.currAns);
 						break;
-					case "transSig":
-						interactManager.sigWA(packet.data);
+					case "tranSig":
+						interactManager.sigWa(packet.data);
 						break;
 					case 'qnStatus':
 						break;

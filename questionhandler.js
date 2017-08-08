@@ -6,7 +6,6 @@ define(["jquery"],function(){
 		submitBtn=kernelParams.submitBtn;
 		submitBtn.disabled=true;
 
-
 		// create a head manager. 
 		// 1. remove old head, and add new head. 
 		var headManager=new function($head){
@@ -97,8 +96,8 @@ define(["jquery"],function(){
 				bodyManager.set(currWidObj.widBody())
 				// determine if this is the right pattern
 				// when constructing this on the widget side. 
-				if(typeof(currWidObj.sigAw)=="function"){
-					currWidObj.sigAw(kernelParams.sigAw);
+				if(typeof(currWidObj.passSigAw)=="function"){
+					currWidObj.passSigAw(interactManager.sigAw);
 				}
 				if(typeof(currWidObj.sigWa)=="function"){
 					question.sigWa=currWidObj.sigWa;

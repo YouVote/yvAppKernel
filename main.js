@@ -72,7 +72,7 @@ function(clicker,socketPlayEngine,qnHandlerEngine){
 				socketPlayObj.relay({'title':'ans','data':ans});
 			},
 			sigAw:function(sig){
-				socketPlayObj.relay({'title':'transig','data':sig})
+				socketPlayObj.relay({'title':'tranSig','data':sig})
 			}
 		}
 		this.setKernelParam=function(name,value){
