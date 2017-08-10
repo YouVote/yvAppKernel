@@ -18,7 +18,6 @@ function(clicker,socketPlayEngine,qnHandlerEngine){
 			"deviceUuid":deviceUuid,
 			"studentName":studentName,
 			"widFrame":document.createElement("iframe"),
-			// "optDiv":document.createElement("div"),
 			"submitBtn":document.createElement("button"),
 			"baseProdUrl":"https://youvote.github.io/clicker-prod/",
 			onConnectPass:function(baseProdUrl){},
@@ -93,9 +92,51 @@ function(clicker,socketPlayEngine,qnHandlerEngine){
 			}
 		}
 
+		// var widFrame=kernelParams.widFrame;
+		// 1. remove old head, and add new head. 
+		var headManager=new function($head){
+			// var $currPermStyle
+			// currwidstyle should be an array of jquery styles. 
+			var $currWidHead=null;
+			this.setPerm=function(newStyle){
+				$head.append(newStyle)
+			}
+			this.clear=function(){ // simply clear
+				// check if exists [loop over and remove]
+				if($currWidHead!=null){
+					$currWidHead.remove();
+				}
+			}
+			this.set=function(newStyle){ // setItem
+				// generalize this to check if array
+				// check if newStyle is array.
+				if(typeof(newStyle)=="string"){
+					$newStyle=$(newStyle);
+				} else {
+				// check if it is jquery obj.
+					$newStyle=newStyle;
+				}
+				$newStyle.appendTo($head);
+				// push.
+				$currWidHead=$newStyle;
+			}
+		}($(widFrame).contents().find("head"));
+
+		var url = "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css";
+		headManager.setPerm($("<link/>", { rel: "stylesheet", href: url, type: "text/css" } ));
+
+		var bodyManager=new function($body){
+			this.clear=function(){
+				$body.empty(); $body.attr("class","");
+			}
+			this.set=function(content){
+				$body.html(content);
+			}
+		}($(widFrame).contents().find("body"));
+
 		this.connect=function(){
 			connectCalled=true;
-			qnHandlerObj=new qnHandlerEngine(kernelParams,interactManager);
+			qnHandlerObj=new qnHandlerEngine(bodyManager,headManager,kernelParams,interactManager);
 			require.config({paths:{"socketio-server":kernelParams.socketScriptURL}});
 			socketPlayObj=new socketPlayEngine(kernelParams,interactManager);
 		}
