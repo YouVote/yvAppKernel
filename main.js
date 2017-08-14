@@ -92,51 +92,78 @@ function(clicker,socketPlayEngine,qnHandlerEngine){
 			}
 		}
 
-		// var widFrame=kernelParams.widFrame;
-		// 1. remove old head, and add new head. 
-		var headManager=new function($head){
-			// var $currPermStyle
-			// currwidstyle should be an array of jquery styles. 
-			var $currWidHead=null;
-			this.setPerm=function(newStyle){
-				$head.append(newStyle)
-			}
-			this.clear=function(){ // simply clear
-				// check if exists [loop over and remove]
-				if($currWidHead!=null){
-					$currWidHead.remove();
+		// Tidy this up when gadget and widlets implemented.  
+		function initManagers(){
+			// var widFrame=kernelParams.widFrame;
+			// 1. remove old head, and add new head. 
+			var headManager=new function($head){
+				// var $currPermStyle
+				// currwidstyle should be an array of jquery styles. 
+				var $currWidHead=null;
+				this.setPerm=function(newStyle){
+					$head.append(newStyle)
 				}
-			}
-			this.set=function(newStyle){ // setItem
-				// generalize this to check if array
-				// check if newStyle is array.
-				if(typeof(newStyle)=="string"){
-					$newStyle=$(newStyle);
-				} else {
-				// check if it is jquery obj.
-					$newStyle=newStyle;
+				this.clear=function(){ // simply clear
+					// check if exists [loop over and remove]
+					if($currWidHead!=null){
+						$currWidHead.remove();
+					}
 				}
-				$newStyle.appendTo($head);
-				// push.
-				$currWidHead=$newStyle;
-			}
-		}($(widFrame).contents().find("head"));
+				this.set=function(newStyle){ // setItem
+					// generalize this to check if array
+					// check if newStyle is array.
+					if(typeof(newStyle)=="string"){
+						$newStyle=$(newStyle);
+					} else {
+					// check if it is jquery obj.
+						$newStyle=newStyle;
+					}
+					$newStyle.appendTo($head);
+					// push.
+					$currWidHead=$newStyle;
+				}
+			}($(widFrame).contents().find("head"));
+	
+			var url = "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css";
+			headManager.setPerm($("<link/>", { rel: "stylesheet", href: url, type: "text/css" } ));
+	
+			var bodyManager=new function($body){
+				this.clear=function(){
+					$body.empty(); $body.attr("class","");
+				}
+				this.set=function(content){
+					$body.html(content);
+				}
+			}($(widFrame).contents().find("body"));
+	
+			var submitManager=new function($submitBtn){
+				this.attachOnClick=function(getAns){
+					$submitBtn.onclick=getAns;
+				}
+				this.greyOut=function(bool){
+					$submitBtn.disabled=bool;
+				}
+				this.hide=function(bool){
+					// yet to implement in ionic
+					$submitBtn.disabled=bool;
+				}
+			}(kernelParams.submitBtn);
 
-		var url = "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css";
-		headManager.setPerm($("<link/>", { rel: "stylesheet", href: url, type: "text/css" } ));
-
-		var bodyManager=new function($body){
-			this.clear=function(){
-				$body.empty(); $body.attr("class","");
+			return {
+				"body":bodyManager,
+				"head":headManager,
+				"submit":submitManager
 			}
-			this.set=function(content){
-				$body.html(content);
-			}
-		}($(widFrame).contents().find("body"));
+		}
 
 		this.connect=function(){
 			connectCalled=true;
-			qnHandlerObj=new qnHandlerEngine(bodyManager,headManager,kernelParams,interactManager);
+			var managers=initManagers();
+			// head.clear()
+			qnHandlerObj=new qnHandlerEngine(
+				managers.body,managers.head,managers.submit,
+				kernelParams,interactManager
+			);
 			require.config({paths:{"socketio-server":kernelParams.socketScriptURL}});
 			socketPlayObj=new socketPlayEngine(kernelParams,interactManager);
 		}

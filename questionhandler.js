@@ -1,17 +1,14 @@
+// - gets yvBaseProdUrl from information sent by host. 
 define(["jquery"],function(){
-	return function questionHandler(bodyManager,headManager,kernelParams,interactManager){
+	return function questionHandler(
+			bodyManager,headManager,submitManager,kernelParams,interactManager
+		){
 		var question=this; var widObj;
 		var baseProdUrl=kernelParams.baseProdUrl;
-		submitBtn=kernelParams.submitBtn;
-		submitBtn.disabled=true;
 
-		//submitBtnManager, with 
-		// 1. attach getAns
-		// 2. greyOut
-		// 3. hide
 		this.initBaseProdUrl=function(tempBaseProdUrl){
-			// update baseProdUrl if something non-trivial is passed;
-			// else, revert to default found in kernelParams
+			// baseProdUrl is provided by host,
+			// defaults to kernelParams if not passed.
 			if(tempBaseProdUrl!=""){
 				baseProdUrl=tempBaseProdUrl;
 			} 
@@ -21,40 +18,30 @@ define(["jquery"],function(){
 				]
 			})
 		}
+		// clean up the process.   
 		this.execQn=function(widName,widParams,currAns){
 			headManager.clear();bodyManager.clear();
 			widPath=baseProdUrl+"mods/"+widName+".js";
-			require([widPath],function(mod){
-				var currWidObj=new mod.appEngine(widParams);
+			// inject yvProdBaseAddr into params.
+			var system={}; if(widParams==null){widParams={}}; 
+			system.yvProdBaseAddr=kernelParams.yvProdBaseAddr; 
+			widParams["system"]=system;
+			require([widPath],function(widget){
+				var currWidObj=new widget.appEngine(widParams);
 				var restoreState;
 				if(currAns==undefined){
-					restoreState=function(){}
-					// submit button manager
-					// submitBtn.enabled()
-					submitBtn.onclick=question.submit;
-					submitBtn.disabled=false;
+					submitManager.greyOut(false);
 				} else {
-					restoreState=function(){
-						currWidObj.putAns(currAns);
-						currWidObj.grayOut();
-					}
-					// submitBtn.disabled()
-					submitBtn.disabled=true;
+					currWidObj.putAns(currAns);
+					currWidObj.grayOut();
+					submitManager.greyOut(true);
 				}	
-				currWidObj.onDomReady(restoreState);
-				// check if widHead exists first.		
 				if(typeof(currWidObj.widHead)=="function"){
-					// if typeof is string, pass it to jquery
-					// console.log(widObj.widHead())
-					// var $style=$()
-					// console.log($style)
-					// $style.appendTo($head);
 					headManager.set(currWidObj.widHead());
 				}
-
-				// $body.html(widObj.widBody());
-				// check if widBody exists first.	
-				bodyManager.set(currWidObj.widBody())
+				if(typeof(currWidObj.widBody)=="function"){
+					bodyManager.set(currWidObj.widBody())
+				}
 				// determine if this is the right pattern
 				// when constructing this on the widget side. 
 				if(typeof(currWidObj.passSigAw)=="function"){
@@ -68,23 +55,23 @@ define(["jquery"],function(){
 					}
 				}
 				if(typeof(currWidObj.getAns)=="function"){
-					submitBtn.onclick=function(){
+					submitManager.attachOnClick(function(){
 						var ans=widObj.getAns();
 						if(ans!=null){
 							interactManager.studResp(ans)
 							widObj.grayOut();
-							submitBtn.disabled=true;
+							submitManager.greyOut(true);
 						} 
-					}
+					});
+					submitManager.hide(false);
 				} else {
-					// hide submit button also
-					submitBtn.onclick=function(){
+					submitManager.attachOnClick(function(){
 						console.warn("getAns does not exist for " + widName);	
-					}
+					});
+					submitManager.hide(true);
 				}
 				widObj=currWidObj;
 			},function(err){
-				// in case of invalid widName
 				console.error(err+" when loading widget "+widName);
 			});
 		}
