@@ -96,7 +96,7 @@ function(clicker,socketPlayEngine,qnHandlerEngine){
 
 		// Tidy this up when gadget and widlets implemented.  
 		function initManagers(){
-			// var widFrame=kernelParams.widFrame;
+			var widFrame=kernelParams.widFrame;
 			// 1. remove old head, and add new head. 
 			var headManager=new function($head){
 				// var $currPermStyle
