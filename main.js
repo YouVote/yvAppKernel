@@ -5,17 +5,19 @@
 // This is required by questionhandler, and allows for specifying the file
 // locally as in the ionic use case. 
 
-define(["./clicker","./socketplay","./questionhandler"],
-function(clicker,socketPlayEngine,qnHandlerEngine){
+define(["socket-router","./clicker","./socketplay","./questionhandler"],
+function(router,clicker,socketPlayEngine,qnHandlerEngine){
 	return function(gameId,studentName,deviceUuid){
 		var yvAppKernel=this;
 		var socketPlayObj, qnHandlerObj;
 		var connectCalled=false;
 		var kernelParams={
 			// socketScriptURL:"https://avalon-gabrielwu84.rhcloud.com/socket.io/socket.io",
-			socketScriptURL:"http://socketio-server-youvote.a3c1.starter-us-west-1.openshiftapps.com/socket.io/socket.io.js",
+			// socketScriptURL:"http://socketio-server-youvote.a3c1.starter-us-west-1.openshiftapps.com/socket.io/socket.io.js",
+			socketScriptURL:router.socketScriptURL,
 			// socketServerURL:"https://avalon-gabrielwu84.rhcloud.com:8443",
-			socketServerURL:"http://socketio-server-youvote.a3c1.starter-us-west-1.openshiftapps.com/",
+			// socketServerURL:"http://socketio-server-youvote.a3c1.starter-us-west-1.openshiftapps.com/",
+			socketServerURL:router.socketServerURL,
 			"gameId": gameId,
 			"deviceUuid":deviceUuid,
 			"studentName":studentName,
@@ -42,6 +44,7 @@ function(clicker,socketPlayEngine,qnHandlerEngine){
 				// try to decode cause into human format
 				switch(originCode){
 					case 1:
+						// could also be caused by socketio-server fault
 						human="Could not connect to server. Please check your internet connection.";
 						break;
 					case 2:
