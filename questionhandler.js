@@ -15,6 +15,7 @@ define(["jquery"],function(){
 			require.config({
 				packages:[
 					{"name":"ctype","location":baseProdUrl+"ctype/"},
+					{"name":"async","location":baseProdUrl+"async/"},
 				]
 			})
 		}
