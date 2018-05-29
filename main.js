@@ -149,8 +149,14 @@ function(router,clicker,socketPlayEngine,qnHandlerEngine){
 					$submitBtn.disabled=bool;
 				}
 				this.hide=function(bool){
-					// yet to implement in ionic
-					$submitBtn.disabled=bool;
+					// Todo: implement properly in ionic
+					// submit button should totally dissappear,
+					// right now button removed, but space is still taken up. 
+					if(bool){
+						$submitBtn.style.display="none";
+					}else{
+						$submitBtn.style.display="block";
+					}
 				}
 			}(kernelParams.submitBtn);
 
